@@ -10,38 +10,33 @@ import java.util.Set;
 public class Day1 {
 
 	public static void main (String... args) throws IOException {
-		List<String> inputFile = readFile();
-		List<Integer> valuesToSum = replaceValues(inputFile);
-		int res = sum(valuesToSum);
-		System.out.println(res);
+		try {
+			List<String> inputFile = readFile();
+			int sum = getCalibrationValues(inputFile).stream().reduce(0, Integer::sum);
+			System.out.println(sum);
+		} catch (Exception ex){
+			System.out.println(ex.toString());
+		}
 	}
 	
-	private static List<Integer> replaceValues(List<String> input) {
-		LinkedHashMap<String, String> basket = getValuesToReplace();
-		Set<String> keys = basket.keySet();
+	private static List<Integer> getCalibrationValues(List<String> input) {
+		LinkedHashMap<String, String> replaceMap = getValuesToReplace();
+		Set<String> keys = replaceMap.keySet();
 
-		List<Integer> valuesToSum = new ArrayList<>();
+		List<Integer> calibrationValues = new ArrayList<>();
+		
 		input.forEach(line ->{
 			String s = line;
 			for (String key : keys) {
-				s = s.replaceAll(key, basket.get(key));
+				s = s.replaceAll(key, replaceMap.get(key));
 			}
 			s = s.substring(0,1) + s.substring(s.length() -1, s.length());
-			valuesToSum.add(Integer.valueOf(s));
+			calibrationValues.add(Integer.valueOf(s));
 		});
 
-		return valuesToSum;
+		return calibrationValues;
 	}
 
-	private static int sum(List<Integer> valuesToSum) {
-		int res = 0;
-		for (Integer v : valuesToSum) {
-			res = res + v;
-		}
-		
-		return res;
-	}
-	
 	private static List<String> readFile() throws IOException{
 		Path p = Paths.get("src/day1.txt");
 		return Files.readAllLines(p);
